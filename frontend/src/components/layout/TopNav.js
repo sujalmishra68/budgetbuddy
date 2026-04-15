@@ -41,13 +41,14 @@ export default function TopNav({ onMenuToggle }) {
       </div>
       <div className="flex items-center gap-2">
         <Button
-          variant="ghost"
-          size="icon"
+          variant="outline"
+          size="sm"
           onClick={() => dispatch(toggleTheme())}
           data-testid="theme-toggle-btn"
-          className="rounded-full"
+          className="rounded-full gap-2 px-3"
         >
-          {isDark ? <Sun weight="duotone" className="w-5 h-5" /> : <Moon weight="duotone" className="w-5 h-5" />}
+          {isDark ? <Sun weight="duotone" className="w-4 h-4" /> : <Moon weight="duotone" className="w-4 h-4" />}
+          <span className="text-xs hidden sm:inline">{isDark ? 'Light' : 'Dark'}</span>
         </Button>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
