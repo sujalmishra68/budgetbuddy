@@ -1,0 +1,128 @@
+{
+  "project_domain": "Finance & Expense Tracking Dashboard",
+  "theme_and_archetype": {
+    "theme": "Light Theme (Default) with Dark Mode Toggle",
+    "archetype_number": 4,
+    "archetype_name": "Swiss & High-Contrast",
+    "rationale": "For a 'modern minimalist with professional/corporate aesthetic', the Swiss & High-Contrast archetype emphasizes authority, clarity, and function-first design. It avoids visual clutter, utilizing deep blacks, stark whites, and highly vibrant functional accents (signal colors for finances)."
+  },
+  "typography": {
+    "font_families": {
+      "headings": "Outfit, sans-serif",
+      "body": "Manrope, sans-serif"
+    },
+    "google_fonts_url": "https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap",
+    "hierarchy_rules": {
+      "h1_hero": "text-4xl sm:text-5xl font-semibold tracking-tight leading-none",
+      "h2_section": "text-2xl sm:text-3xl font-medium tracking-tight",
+      "h3_widget": "text-xl font-medium tracking-tight",
+      "body": "text-base leading-relaxed tracking-normal",
+      "labels": "text-xs font-bold uppercase tracking-[0.2em] text-slate-500"
+    },
+    "notes": "Never use Inter or generic default fonts for headings. Use Outfit to give a sharp, geometric, and corporate look. Tight letter-spacing for large text is mandatory."
+  },
+  "color_palette": {
+    "light_mode": {
+      "background": "#FFFFFF",
+      "surface": "#F8FAFC", 
+      "surface_hover": "#F1F5F9",
+      "border": "#E2E8F0",
+      "text_primary": "#0F172A",
+      "text_secondary": "#64748B"
+    },
+    "dark_mode": {
+      "background": "#020617",
+      "surface": "#0F172A",
+      "surface_hover": "#1E293B",
+      "border": "#1E293B",
+      "text_primary": "#F8FAFC",
+      "text_secondary": "#94A3B8"
+    },
+    "accents": {
+      "primary": "#2563EB", 
+      "primary_hover": "#1D4ED8",
+      "expense_red": "#E11D48",
+      "expense_red_bg": "rgba(225, 29, 72, 0.1)",
+      "income_green": "#10B981",
+      "income_green_bg": "rgba(16, 185, 129, 0.1)",
+      "alert_yellow": "#F59E0B"
+    },
+    "rules": "All greys must be tinted with blue (Slate). Ensure 4.5:1 text contrast. Do not use pure #000000 or #808080."
+  },
+  "spacing_and_layout": {
+    "philosophy": "Generous Spacing. Use p-6, p-8, p-12 extensively to separate sections and create an uncluttered, corporate look.",
+    "dashboard_grid": {
+      "mode": "Mode B: The 'Control Room' Grid",
+      "base_grid": "grid-cols-1 md:grid-cols-3 lg:grid-cols-4",
+      "gap": "gap-6",
+      "span_logic": {
+        "summary_widgets": "col-span-1",
+        "main_chart": "col-span-2 md:col-span-3 lg:col-span-2",
+        "recent_transactions": "col-span-1 md:col-span-3 lg:col-span-2"
+      }
+    },
+    "general": {
+      "mobile_first": true,
+      "container": "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8",
+      "sidebar_layout": "Sidebar fixed w-64, Main content margin-left 64 (md/lg viewports)."
+    }
+  },
+  "surface_strategies": {
+    "cards": {
+      "style": "Flat Solid with 1px border. No shadows in light mode to keep it crisp. In dark mode, use subtle shadow to add depth if needed.",
+      "classes": "bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-6"
+    },
+    "headers_and_nav": {
+      "style": "Glassmorphism (Crystal variant)",
+      "classes": "backdrop-blur-xl bg-white/70 dark:bg-slate-950/70 border-b border-slate-200/50 dark:border-slate-800/50 backdrop-saturate-150"
+    },
+    "tables_and_lists": {
+      "style": "Grid Borders",
+      "classes": "border-collapse styles. Subtle borders separating rows, no heavy alternating background colors."
+    }
+  },
+  "motion_and_interactions": {
+    "hover_states": "All interactive elements must change background or text color smoothly (e.g., hover:bg-slate-100 hover:text-slate-900).",
+    "transitions": "Use specific properties: transition-colors duration-200 ease-in-out.",
+    "entrance_animations": "Staggered fade-up for dashboard widgets and list items.",
+    "charts": "Recharts tooltips and bars/lines should have gentle ease-in animations."
+  },
+  "components_and_libraries": {
+    "ui_library": "shadcn/ui",
+    "required_shadcn_components": ["Button", "Card", "Input", "Select", "Table", "Dialog", "DropdownMenu", "Tabs", "Badge"],
+    "icons": "@phosphor-icons/react (Duotone weight for primary icons, Regular for standard UI)",
+    "charts": "Recharts",
+    "toast": "Sonner for notifications",
+    "state_management": "Redux Toolkit",
+    "routing": "React Router DOM"
+  },
+  "media_and_assets": {
+    "instructions": "Use Phosphor Icons heavily for all features, stats, and empty states. Do not use placeholder images.",
+    "image_urls": {
+      "auth_background": {
+        "url": "https://images.unsplash.com/photo-1768121496336-32f82056a303?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzMzN8MHwxfHNlYXJjaHwxfHxtaW5pbWFsaXN0JTIwYWJzdHJhY3QlMjBnZW9tZXRyaWMlMjBwYXR0ZXJuJTIwYXJjaGl0ZWN0dXJlfGVufDB8fHx8MTc3NjI3NzUyNnww&ixlib=rb-4.1.0&q=85",
+        "description": "Abstract architectural geometric pattern for Login/Register split-screen background."
+      },
+      "user_avatar_placeholder": {
+        "url": "https://images.unsplash.com/photo-1672685667592-0392f458f46f?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA0MTJ8MHwxfHNlYXJjaHwxfHxwcm9mZXNzaW9uYWwlMjBwb3J0cmFpdCUyMGhlYWRzaG90fGVufDB8fHx8MTc3NjI3NzUxNnww&ixlib=rb-4.1.0&q=85",
+        "description": "Professional avatar for the top navbar profile dropdown."
+      }
+    }
+  },
+  "accessibility_and_testing": {
+    "data_testid": "MANDATORY on all buttons, links, form inputs, menus, and significant UI components. Format: kebab-case (e.g., login-submit-button).",
+    "contrast": "Ensure all text, especially within cards and badges, passes contrast ratios.",
+    "focus": "focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:outline-none"
+  },
+  "instructions_to_main_agent": [
+    "Install required dependencies: react-router-dom, @reduxjs/toolkit, react-redux, recharts, @phosphor-icons/react, sonner, clsx, tailwind-merge",
+    "Initialize Shadcn UI and install necessary primitive components",
+    "Configure Tailwind CSS with the provided color palette (use Slate for neutral grays) and add the fonts via CSS imports",
+    "Build the Sidebar and Top Navbar layout first. Ensure it collapses cleanly on mobile.",
+    "Use Phosphor icons heavily: TrendUp, TrendDown, Wallet, ChartPie, ShieldCheck, etc.",
+    "Implement the dashboard using Grid Mode B (Control Room grid)",
+    "For Dark Mode, use the 'dark' tailwind class and toggle via Redux or LocalStorage.",
+    "Do NOT use HTML inputs for Date or Select; use Shadcn equivalents.",
+    "All components must be functional, and API integrations with FastAPI should be properly wired up or clearly structured with Redux Thunks/RTK Query."
+  ]
+}
