@@ -42,13 +42,13 @@ export default function Dashboard() {
     <div className="space-y-6 animate-fade-in" data-testid="dashboard-page">
       <div>
         <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight font-[Outfit]">Dashboard</h1>
-        <p className="text-muted-foreground mt-1">Overview of your financial activity</p>
+        <p className="mt-1 text-muted-foreground">Overview of your financial activity</p>
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 stagger-children" data-testid="summary-cards">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 stagger-children" data-testid="summary-cards">
         {summaryCards.map((card) => (
-          <Card key={card.label} className="border border-border bg-card hover:border-primary/20 transition-colors duration-200">
+          <Card key={card.label} className="transition-colors duration-200 border border-border bg-card hover:border-primary/20">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
@@ -65,9 +65,9 @@ export default function Dashboard() {
       </div>
 
       {/* Charts Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         {/* Trends Chart */}
-        <Card className="lg:col-span-2 border border-border bg-card">
+        <Card className="border lg:col-span-2 border-border bg-card">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-xl font-medium tracking-tight font-[Outfit]">Spending Trends</CardTitle>
             <div className="flex gap-1">
@@ -112,18 +112,44 @@ export default function Dashboard() {
             {stats?.category_breakdown?.length > 0 ? (
               <>
                 <div className="h-[200px]">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie data={stats.category_breakdown} dataKey="total" nameKey="category_name" cx="50%" cy="50%" innerRadius={50} outerRadius={80} paddingAngle={2}>
-                        {stats.category_breakdown.map((_, i) => (
-                          <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />
-                        ))}
-                      </Pie>
-                      <Tooltip formatter={(v) => `$${Number(v).toFixed(2)}`} contentStyle={{ background: isDark ? '#0F172A' : '#FFF', border: `1px solid ${isDark ? '#1E293B' : '#E2E8F0'}`, borderRadius: '8px', fontSize: '13px' }} />
-                    </PieChart>
-                  </ResponsiveContainer>
-                </div>
-                <div className="space-y-2 mt-2">
+  <ResponsiveContainer width="100%" height="100%">
+    <PieChart>
+      <Pie
+        data={Array.isArray(stats?.category_breakdown)
+          ? stats.category_breakdown
+          : []}
+        dataKey="total"
+        nameKey="category_name"
+        cx="50%"
+        cy="50%"
+        innerRadius={50}
+        outerRadius={80}
+        paddingAngle={2}
+      >
+        {(Array.isArray(stats?.category_breakdown)
+          ? stats.category_breakdown
+          : []
+        ).map((_, i) => (
+          <Cell
+            key={i}
+            fill={PIE_COLORS[i % PIE_COLORS.length]}
+          />
+        ))}
+      </Pie>
+
+      <Tooltip
+        formatter={(v) => `$${Number(v).toFixed(2)}`}
+        contentStyle={{
+          background: isDark ? "#0F172A" : "#FFF",
+          border: `1px solid ${isDark ? "#1E293B" : "#E2E8F0"}`,
+          borderRadius: "8px",
+          fontSize: "13px",
+        }}
+      />
+    </PieChart>
+  </ResponsiveContainer>
+</div>
+                <div className="mt-2 space-y-2">
                   {stats.category_breakdown.slice(0, 5).map((cat, i) => (
                     <div key={cat.category_name} className="flex items-center justify-between text-sm">
                       <div className="flex items-center gap-2">
@@ -158,7 +184,7 @@ export default function Dashboard() {
               {stats.recent_transactions.map((tx) => (
                 <div key={tx.id} className="flex items-center justify-between py-2 border-b border-border last:border-0">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center">
+                    <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-muted">
                       <Receipt weight="duotone" className="w-5 h-5 text-muted-foreground" />
                     </div>
                     <div>
@@ -174,7 +200,7 @@ export default function Dashboard() {
               ))}
             </div>
           ) : (
-            <div className="py-8 text-center text-muted-foreground text-sm">No transactions yet. Add your first expense!</div>
+            <div className="py-8 text-sm text-center text-muted-foreground">No transactions yet. Add your first expense!</div>
           )}
         </CardContent>
       </Card>
@@ -185,11 +211,11 @@ export default function Dashboard() {
 function DashboardSkeleton() {
   return (
     <div className="space-y-6">
-      <div><Skeleton className="h-10 w-48" /><Skeleton className="h-5 w-64 mt-2" /></div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div><Skeleton className="w-48 h-10" /><Skeleton className="w-64 h-5 mt-2" /></div>
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {[1, 2, 3, 4].map(i => <Skeleton key={i} className="h-32 rounded-xl" />)}
       </div>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         <Skeleton className="lg:col-span-2 h-[360px] rounded-xl" />
         <Skeleton className="h-[360px] rounded-xl" />
       </div>
