@@ -2,8 +2,9 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from fastapi import FastAPI, APIRouter, Request, Response, HTTPException, Query
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
-from starlette.middleware.cors import CORSMiddleware
+
 from motor.motor_asyncio import AsyncIOMotorClient
 from bson import ObjectId
 import os, logging, bcrypt, jwt, csv, io
@@ -23,6 +24,16 @@ db = client[os.environ['DB_NAME']]
 
 # App
 app = FastAPI(title="Expense Tracker API", docs_url="/api/docs", openapi_url="/api/openapi.json")
+frontend_url = os.environ.get("FRONTEND_URL", "http://localhost:3000")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[frontend_url],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 api_router = APIRouter(prefix="/api")
 
 # JWT
@@ -101,6 +112,7 @@ class ExpenseUpdate(BaseModel):
     payment_method: Optional[str] = None
 
 class CategoryInput(BaseModel):
+     
     name: str
     icon: str = "tag"
     color: str = "#2563EB"
