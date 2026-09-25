@@ -1,6 +1,7 @@
 from dotenv import load_dotenv
 load_dotenv()
 
+from contextlib import asynccontextmanager
 from fastapi import FastAPI, APIRouter, Request, Response, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
@@ -23,12 +24,36 @@ client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
 
 # App
-app = FastAPI(title="Expense Tracker API", docs_url="/api/docs", openapi_url="/api/openapi.json")
 frontend_url = os.environ.get("FRONTEND_URL", "http://localhost:3000")
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup
+    await db.users.create_index("email", unique=True)
+    await db.login_attempts.create_index("identifier")
+    await db.expenses.create_index([("user_id", 1), ("date", -1)])
+    await db.categories.create_index("user_id")
+    await db.budgets.create_index([("user_id", 1), ("month", 1), ("year", 1)])
+    await seed_admin()
+    await seed_categories()
+    await process_recurring_expenses()
+    memory_dir = os.path.join(os.path.dirname(__file__), "..", "memory")
+    os.makedirs(memory_dir, exist_ok=True)
+    creds_path = os.path.join(memory_dir, "test_credentials.md")
+    with open(creds_path, "w") as f:
+        f.write("# Test Credentials\n\n")
+        f.write(f"## Admin\n- Email: {os.environ.get('ADMIN_EMAIL')}\n- Password: {os.environ.get('ADMIN_PASSWORD')}\n- Role: admin\n\n")
+        f.write("## Auth Endpoints\n- POST /api/auth/register\n- POST /api/auth/login\n- POST /api/auth/logout\n- GET /api/auth/me\n- POST /api/auth/refresh\n")
+    logging.info("Startup complete - admin seeded, categories seeded")
+    yield
+    # Shutdown
+    client.close()
+
+app = FastAPI(title="Expense Tracker API", docs_url="/api/docs", openapi_url="/api/openapi.json", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[frontend_url],
+    allow_origins=[frontend_url, "http://localhost:3000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -602,7 +627,7 @@ async def change_password(input: PasswordChange, request: Request):
     await db.users.update_one({"_id": ObjectId(user["_id"])}, {"$set": {"password_hash": hash_password(input.new_password)}})
     return {"message": "Password updated"}
 
-# ==================== STARTUP ====================
+# ==================== CATEGORIES SEED DATA ====================
 PREDEFINED_CATEGORIES = [
     {"name": "Food & Dining", "icon": "fork-knife", "color": "#E11D48"},
     {"name": "Transportation", "icon": "car", "color": "#2563EB"},
@@ -639,37 +664,7 @@ async def seed_admin():
     elif not verify_password(admin_password, existing["password_hash"]):
         await db.users.update_one({"email": admin_email}, {"$set": {"password_hash": hash_password(admin_password)}})
 
-@app.on_event("startup")
-async def startup():
-    await db.users.create_index("email", unique=True)
-    await db.login_attempts.create_index("identifier")
-    await db.expenses.create_index([("user_id", 1), ("date", -1)])
-    await db.categories.create_index("user_id")
-    await db.budgets.create_index([("user_id", 1), ("month", 1), ("year", 1)])
-    await seed_admin()
-    await seed_categories()
-    await process_recurring_expenses()
-    os.makedirs("/app/memory", exist_ok=True)
-    with open("/app/memory/test_credentials.md", "w") as f:
-        f.write("# Test Credentials\n\n")
-        f.write(f"## Admin\n- Email: {os.environ.get('ADMIN_EMAIL')}\n- Password: {os.environ.get('ADMIN_PASSWORD')}\n- Role: admin\n\n")
-        f.write("## Auth Endpoints\n- POST /api/auth/register\n- POST /api/auth/login\n- POST /api/auth/logout\n- GET /api/auth/me\n- POST /api/auth/refresh\n")
-    logging.info("Startup complete - admin seeded, categories seeded")
-
 app.include_router(api_router)
-
-frontend_url = os.environ.get("FRONTEND_URL", "http://localhost:3000")
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=[frontend_url, "http://localhost:3000"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
-
-@app.on_event("shutdown")
-async def shutdown():
-    client.close()
